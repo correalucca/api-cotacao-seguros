@@ -13,6 +13,20 @@ REST API para cadastro de clientes, veículos e geração de cotações de segur
 
 ---
 
+## Sobre o projeto
+
+Esta API foi desenvolvida para automatizar o fluxo de cotação de seguros. Ela centraliza o cadastro de clientes, veículos e usuários, permitindo gerar cotações de forma rápida e padronizada.
+
+**Problema que resolve:** substituir processos manuais por uma API com autenticação JWT, validação de dados e respostas consistentes.
+
+**O que você pode fazer com ela:**
+- Criar e autenticar usuários
+- Cadastrar clientes e veículos
+- Gerar cotações de seguro vinculando cliente + veículo
+- Consultar e atualizar registros
+
+---
+
 ## Índice
 
 - [Autenticação](#-autenticação)
@@ -235,18 +249,11 @@ Todas as respostas seguem o formato padronizado:
 
 ---
 
-## Sobre o projeto
-
-Esta API foi desenvolvida para automatizar o fluxo de cotação de seguros. Ela centraliza o cadastro de clientes, veículos e usuários, permitindo gerar cotações de forma rápida e padronizada.
-
-**Problema que resolve:** substituir processos manuais por uma API com autenticação JWT, validação de dados e respostas consistentes.
-
-**O que você pode fazer com ela:**
-- Criar e autenticar usuários
-- Cadastrar clientes e veículos
-- Gerar cotações de seguro vinculando cliente + veículo
-- Consultar e atualizar registros
+> **Documentação interativa:** com a aplicação rodando, acesse `http://localhost:8080/swagger-ui/` para testar todos os endpoints diretamente pelo navegador.
 
 ---
 
-> Documentação completa dos endpoints disponível em `http://localhost:8080/swagger-ui/` com a aplicação rodando.
+<div align="center">
+  <p><strong>API de Cotação de Seguros</strong> — v0.0.1-SNAPSHOT</p>
+  <p><sub>Contribuições são bem-vindas · <a href="https://github.com/correalucca/api-cotacao-seguros/issues">Reportar problema</a> · <a href="https://github.com/correalucca/api-cotacao-seguros">Repositório</a></sub></p>
+</div>
