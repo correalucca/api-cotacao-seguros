@@ -89,36 +89,36 @@ com.cotacao.seguros
 
 ### Autenticação
 
-| Método | Endpoint | Descrição | Autenticação |
+| Método | Endpoint | Descrição | Requer Token |
 |--------|----------|-----------|:------------:|
-| `POST` | `/auth/signup` | Cadastrar novo usuário | ❌ |
-| `POST` | `/auth/login` | Autenticar e obter token JWT | ❌ |
+| `POST` | `/auth/signup` | Cadastrar novo usuário | ❌ **Público** |
+| `POST` | `/auth/login` | Autenticar e obter token JWT | ❌ **Público** |
 
 ### Clientes
 
-| Método | Endpoint | Descrição | Autenticação |
+| Método | Endpoint | Descrição | Requer Token |
 |--------|----------|-----------|:------------:|
-| `POST` | `/clientes` | Criar novo cliente | ✅ |
-| `GET` | `/clientes` | Listar todos os clientes | ✅ |
-| `GET` | `/clientes/{id}` | Buscar cliente por ID | ✅ |
+| `POST` | `/clientes` | Criar novo cliente | ✅ **Bearer JWT** |
+| `GET` | `/clientes` | Listar todos os clientes | ✅ **Bearer JWT** |
+| `GET` | `/clientes/{id}` | Buscar cliente por ID | ✅ **Bearer JWT** |
 
 ### Veículos
 
-| Método | Endpoint | Descrição | Autenticação |
+| Método | Endpoint | Descrição | Requer Token |
 |--------|----------|-----------|:------------:|
-| `POST` | `/veiculos` | Cadastrar novo veículo | ✅ |
-| `GET` | `/veiculos` | Listar todos os veículos | ✅ |
-| `GET` | `/veiculos/{id}` | Buscar veículo por ID | ✅ |
+| `POST` | `/veiculos` | Cadastrar novo veículo | ✅ **Bearer JWT** |
+| `GET` | `/veiculos` | Listar todos os veículos | ✅ **Bearer JWT** |
+| `GET` | `/veiculos/{id}` | Buscar veículo por ID | ✅ **Bearer JWT** |
 
 ### Cotações
 
-| Método | Endpoint | Descrição | Autenticação |
+| Método | Endpoint | Descrição | Requer Token |
 |--------|----------|-----------|:------------:|
-| `POST` | `/cotacoes` | Gerar nova cotação (vincula cliente + veículo) | ✅ |
-| `GET` | `/cotacoes` | Listar todas as cotações | ✅ |
-| `PUT` | `/cotacoes/{id}` | Atualizar cotação existente | ✅ |
+| `POST` | `/cotacoes` | Gerar nova cotação (vincula cliente + veículo) | ✅ **Bearer JWT** |
+| `GET` | `/cotacoes` | Listar todas as cotações | ✅ **Bearer JWT** |
+| `PUT` | `/cotacoes/{id}` | Atualizar cotação existente | ✅ **Bearer JWT** |
 
-> 🔒 **Endpoints protegidos** exigem o header: `Authorization: Bearer <token>`
+> 🔒 **Como usar:** Envie o token JWT no header `Authorization: Bearer <seu_token>` em todos os endpoints marcados como **Bearer JWT**.
 
 ---
 
