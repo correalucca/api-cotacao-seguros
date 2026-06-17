@@ -2,9 +2,14 @@
 
 REST API para cadastro de clientes, veículos e geração de cotações de seguro com autenticação JWT.
 
-```
-Stack: Java 8 | Spring Boot 2.7.18 | H2 | JWT | Swagger | Flyway
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-8-orange?logo=java" alt="Java 8"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-2.7.18-brightgreen?logo=spring" alt="Spring Boot 2.7.18"/>
+  <img src="https://img.shields.io/badge/H2-Database-blue?logo=h2" alt="H2 Database"/>
+  <img src="https://img.shields.io/badge/JWT-Authentication-yellow?logo=json-web-tokens" alt="JWT"/>
+  <img src="https://img.shields.io/badge/Swagger-OpenAPI-green?logo=swagger" alt="Swagger"/>
+  <img src="https://img.shields.io/badge/License-MIT-lightgrey" alt="License MIT"/>
+</p>
 
 ---
 
