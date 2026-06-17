@@ -1,0 +1,39 @@
+### Maven ###
+target/
+mvnw
+mvnw.cmd
+.mvn/
+
+### IDE ###
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+.vscode/
+bin/
+*.ipr
+*.iws
+
+### Java ###
+*.class
+*.jar
+*.war
+*.log
+*.zip
+*.tar.gz
+
+### OS ###
+.DS_Store
+Thumbs.db
+*.swp
+*~
+~$*
+
+### Build ###
+build/
+out/
+*.bak
+
+### Docs ###
+anotation/
