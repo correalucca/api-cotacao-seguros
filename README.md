@@ -232,3 +232,30 @@ Todas as respostas seguem o formato padronizado:
 | Mapping | MapStruct 1.5.5 |
 | Build | Maven |
 | Outros | Lombok, Bean Validation
+
+---
+
+## 🎯 Pra que serve essa API?
+
+Se você trabalha ou está aprendendo sobre **seguros**, **sistemas de cotação** ou simplesmente quer ver uma API bem estruturada na prática, este projeto é pra você.
+
+A **API de Cotação de Seguros** foi construída para resolver um problema real:
+
+> *"Como uma corretora ou seguradora pode gerenciar o cadastro de clientes, veículos e gerar cotações de seguro de forma rápida, padronizada e segura?"*
+
+Ela permite que você:
+
+- Cadastre e autentique usuários do sistema
+- Gerencie clientes e seus veículos
+- Gere cotações de seguro vinculando um cliente a um veículo
+- Tenha tudo organizado com respostas padronizadas e tratamento de erros consistente
+
+Seja para integrar com um front-end, testar fluxos de automação ou servir de base para um sistema maior — essa API é o ponto de partida.
+
+---
+
+<div align="center">
+  <p>👋 Obrigado por ler até aqui!</p>
+  <p>Curtiu o projeto? <strong>Deixe uma estrela ⭐</strong> no repositório, sugira melhorias ou contribua com código.</p>
+  <p><sub>Feito com dedicação por <a href="https://github.com/correalucca">Lucas Corrêa</a></sub></p>
+</div>
