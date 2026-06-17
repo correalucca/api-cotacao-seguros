@@ -1,188 +1,136 @@
-<div align="center">
-  <h1>🔐 API de Cotação de Seguros</h1>
-  <p><em>REST API para cadastro de clientes, veículos e geração de cotações de seguros com autenticação JWT</em></p>
-</div>
+# API de Cotação de Seguros
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Java-8-orange?logo=java" alt="Java 8"/>
-  <img src="https://img.shields.io/badge/Spring%20Boot-2.7.18-brightgreen?logo=spring" alt="Spring Boot 2.7.18"/>
-  <img src="https://img.shields.io/badge/H2-Database-blue?logo=h2" alt="H2 Database"/>
-  <img src="https://img.shields.io/badge/JWT-Authentication-yellow?logo=json-web-tokens" alt="JWT"/>
-  <img src="https://img.shields.io/badge/Swagger-OpenAPI-green?logo=swagger" alt="Swagger"/>
-  <img src="https://img.shields.io/badge/License-MIT-lightgrey" alt="License MIT"/>
-</p>
+REST API para cadastro de clientes, veículos e geração de cotações de seguro com autenticação JWT.
+
+```
+Stack: Java 8 | Spring Boot 2.7.18 | H2 | JWT | Swagger | Flyway
+```
 
 ---
 
-## 📋 Índice
+## Índice
 
-- [Sobre o Projeto](#-sobre-o-projeto)
-- [Stack Tecnológica](#-stack-tecnológica)
-- [Arquitetura](#-arquitetura)
+- [Autenticação](#-autenticação)
 - [Endpoints](#-endpoints)
-- [Fluxo de Uso](#-fluxo-de-uso)
-- [Como Executar](#-como-executar)
-- [Exemplos com cURL](#-exemplos-com-curl)
-- [Códigos de Resposta](#-códigos-de-resposta)
-- [Documentação Adicional](#-documentação-adicional)
+- [Fluxo de uso](#-fluxo-de-uso)
+- [Como executar](#-como-executar)
+- [Exemplos](#-exemplos)
+- [Códigos de resposta](#-códigos-de-resposta)
+- [Stack](#-stack)
 
 ---
 
-## 📌 Sobre o Projeto
+## 🔐 Autenticação
 
-Esta API permite o gerenciamento completo de:
-
-- **👤 Usuários** — Cadastro e autenticação com JWT
-- **🧑 Clientes** — CRUD de pessoas físicas/jurídicas seguradas
-- **🚗 Veículos** — CRUD de automóveis a serem segurados
-- **📄 Cotações** — Geração e gerenciamento de cotações de seguro, vinculando cliente e veículo
-
-Todas as respostas seguem um padrão unificado `ApiResponse<T>`, facilitando o consumo por qualquer cliente HTTP.
-
----
-
-## 🛠 Stack Tecnológica
-
-| Categoria | Tecnologia | Versão |
-|-----------|-----------|--------|
-| **Linguagem** | Java | 8+ |
-| **Framework** | Spring Boot | 2.7.18 |
-| **Autenticação** | Spring Security + jjwt (JWT HS256) | 0.11.5 |
-| **Persistência** | Spring Data JPA + Flyway | 9.22.3 |
-| **Banco de Dados** | H2 (in-memory) | — |
-| **Documentação** | Springfox Swagger | 3.0.0 |
-| **DTO Mapping** | MapStruct | 1.5.5 |
-| **Build** | Maven | — |
-| **Outros** | Lombok, Bean Validation | — |
-
----
-
-## 🏗 Arquitetura
-
-O projeto segue uma arquitetura em camadas com responsabilidades bem definidas:
+A API utiliza **JWT (JSON Web Token)** para proteger os endpoints. Abaixo a legenda de acesso usada nas tabelas de endpoints:
 
 ```
-com.cotacao.seguros
-│
-├── 📂 controller        # Interface REST (endpoints)
-├── 📂 service           # Regras de negócio (casos de uso)
-├── 📂 repository        # Acesso a dados (Spring Data JPA)
-├── 📂 entity            # Entidades JPA (modelo de domínio)
-├── 📂 dto               # Objetos de transferência (request/response)
-├── 📂 mapper            # MapStruct — conversão entity ↔ DTO
-├── 📂 security          # JWT, filtros, UserDetailsService
-├── 📂 config            # Swagger, Security Chain, Password Encoder
-├── 📂 exception         # Tratamento global + ApiResponse wrapper
-└── 📂 enums             # Códigos padronizados de erro/sucesso
+🔓 Público  → não requer token de acesso
+🔒 Privado  → requer token JWT no header Authorization
 ```
 
-**Principais características:**
-- ✅ Separação clara entre camadas (Controller → Service → Repository)
-- ✅ Padrão DTO para desacoplar a representação interna da externa
-- ✅ Tratamento global de exceções com `@ControllerAdvice`
-- ✅ Respostas padronizadas via `ApiResponse<T>`
-- ✅ Autenticação stateless via JWT com filtro customizado
+### Como obter seu token
+
+```
+1. POST /auth/signup  → cria seu usuário
+2. POST /auth/login   → retorna o accessToken
+3. Use o token em todos os endpoints 🔒
+```
+
+### Onde colocar o token
+
+Em toda requisição para endpoints **🔒 Privado**, inclua o header:
+
+```
+Authorization: Bearer <seu_token_jwt>
+```
+
+**Exemplos em cada ferramenta:**
+
+| Ferramenta | Como usar |
+|---|---|
+| **cURL** | `-H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..."` |
+| **Postman** | Aba **Authorization** → Tipo `Bearer Token` → colar o token |
+| **Swagger UI** | Clique em **Authorize** (🔓 no canto superior direito) → digitar `Bearer <token>` → **Authorize** |
+| **Insomnia** | Aba **Auth** → `Bearer Token` → colar o token |
+| **JavaScript (fetch)** | `headers: { Authorization: 'Bearer <token>' }` |
+
+> O token tem validade de **2 horas**. Após expirar, faça um novo `POST /auth/login` para obter outro.
 
 ---
 
 ## 🔌 Endpoints
 
+> 🔓 Público &nbsp;|&nbsp; 🔒 Privado (exige `Authorization: Bearer <token>`)
+
 ### Autenticação
 
-| Método | Endpoint | Descrição | Requer Token |
-|--------|----------|-----------|:------------:|
-| `POST` | `/auth/signup` | Cadastrar novo usuário | ❌ **Público** |
-| `POST` | `/auth/login` | Autenticar e obter token JWT | ❌ **Público** |
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| `POST` | `/auth/signup` | Cadastrar novo usuário | 🔓 |
+| `POST` | `/auth/login` | Autenticar e obter token JWT | 🔓 |
 
 ### Clientes
 
-| Método | Endpoint | Descrição | Requer Token |
-|--------|----------|-----------|:------------:|
-| `POST` | `/clientes` | Criar novo cliente | ✅ **Bearer JWT** |
-| `GET` | `/clientes` | Listar todos os clientes | ✅ **Bearer JWT** |
-| `GET` | `/clientes/{id}` | Buscar cliente por ID | ✅ **Bearer JWT** |
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| `POST` | `/clientes` | Criar novo cliente | 🔒 |
+| `GET` | `/clientes` | Listar todos os clientes | 🔒 |
+| `GET` | `/clientes/{id}` | Buscar cliente por ID | 🔒 |
 
 ### Veículos
 
-| Método | Endpoint | Descrição | Requer Token |
-|--------|----------|-----------|:------------:|
-| `POST` | `/veiculos` | Cadastrar novo veículo | ✅ **Bearer JWT** |
-| `GET` | `/veiculos` | Listar todos os veículos | ✅ **Bearer JWT** |
-| `GET` | `/veiculos/{id}` | Buscar veículo por ID | ✅ **Bearer JWT** |
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| `POST` | `/veiculos` | Cadastrar novo veículo | 🔒 |
+| `GET` | `/veiculos` | Listar todos os veículos | 🔒 |
+| `GET` | `/veiculos/{id}` | Buscar veículo por ID | 🔒 |
 
 ### Cotações
 
-| Método | Endpoint | Descrição | Requer Token |
-|--------|----------|-----------|:------------:|
-| `POST` | `/cotacoes` | Gerar nova cotação (vincula cliente + veículo) | ✅ **Bearer JWT** |
-| `GET` | `/cotacoes` | Listar todas as cotações | ✅ **Bearer JWT** |
-| `PUT` | `/cotacoes/{id}` | Atualizar cotação existente | ✅ **Bearer JWT** |
-
-> 🔒 **Como usar:** Envie o token JWT no header `Authorization: Bearer <seu_token>` em todos os endpoints marcados como **Bearer JWT**.
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| `POST` | `/cotacoes` | Gerar nova cotação (vincula cliente + veículo) | 🔒 |
+| `GET` | `/cotacoes` | Listar todas as cotações | 🔒 |
+| `PUT` | `/cotacoes/{id}` | Atualizar cotação existente | 🔒 |
 
 ---
 
-## 🔄 Fluxo de Uso
+## 🔄 Fluxo de uso
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant API
-    participant H2
-    
-    Client->>API: POST /auth/signup (criar usuário)
-    Client->>API: POST /auth/login (obter token JWT)
-    API-->>Client: { accessToken: "eyJ..." }
-    Client->>API: POST /veiculos (Authorizarion: Bearer token)
-    Client->>API: POST /clientes (Authorizarion: Bearer token)
-    Client->>API: POST /cotacoes (Authorizarion: Bearer token)
-    API->>H2: Persistir cotação
-    API-->>Client: { code: 0, data: { cotacao } }
+```
+1. POST /auth/signup         → cria usuário
+2. POST /auth/login          → recebe token JWT
+3. POST /veiculos            → cadastra veículo (com token)
+4. POST /clientes            → cadastra cliente (com token)
+5. POST /cotacoes            → gera cotação vinculando cliente + veículo (com token)
 ```
 
-**Passo a passo:**
-
-1. **Criar usuário** → `POST /auth/signup`
-2. **Autenticar** → `POST /auth/login` → recebe o token JWT
-3. **Adicionar veículo** → `POST /veiculos` (com token)
-4. **Adicionar cliente** → `POST /clientes` (com token)
-5. **Gerar cotação** → `POST /cotacoes` informando `idCliente` e `idVeiculo` (com token)
-
 ---
 
-## 🚀 Como Executar
+## 🚀 Como executar
 
-### Pré-requisitos
-
-- [Java 8+](https://adoptium.net/) (JDK)
-- [Maven 3.6+](https://maven.apache.org/download.cgi)
-
-### Passos
+**Pré-requisitos:** Java 8+ e Maven 3.6+
 
 ```bash
-# 1. Clone o repositório
 git clone https://github.com/seu-usuario/api-cotacao-seguros.git
 cd api-cotacao-seguros
-
-# 2. Execute com Maven
 mvn spring-boot:run
 ```
 
-A aplicação iniciará em `http://localhost:8080`.
-
-### Acessos
+Acessar em `http://localhost:8080`.
 
 | Recurso | URL |
 |---------|-----|
-| **API Base** | `http://localhost:8080` |
-| **Swagger UI** | `http://localhost:8080/swagger-ui/` |
-| **Console H2** | `http://localhost:8080/h2-console` |
+| API | `http://localhost:8080` |
+| Swagger UI | `http://localhost:8080/swagger-ui/` |
+| Console H2 | `http://localhost:8080/h2-console` |
 
-> **Credenciais H2:** JDBC URL: `jdbc:h2:mem:segurosdb` | User: `sa` | Password: *(vazio)*
+> H2 — JDBC: `jdbc:h2:mem:segurosdb` | User: `sa` | Senha: *(vazio)*
 
 ---
 
-## 🧪 Exemplos com cURL
+## 🧪 Exemplos
 
 ### 1. Criar usuário
 
@@ -192,7 +140,7 @@ curl -X POST http://localhost:8080/auth/signup \
   -d '{"email":"admin@email.com","password":"123456"}'
 ```
 
-### 2. Login (obter token)
+### 2. Login (receber token)
 
 ```bash
 curl -X POST http://localhost:8080/auth/login \
@@ -201,6 +149,7 @@ curl -X POST http://localhost:8080/auth/login \
 ```
 
 Resposta:
+
 ```json
 {
   "code": 0,
@@ -216,13 +165,8 @@ Resposta:
 ```bash
 curl -X POST http://localhost:8080/clientes \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "nome": "João Silva",
-    "cpf": "123.456.789-00",
-    "email": "joao@email.com",
-    "telefone": "(11) 99999-8888"
-  }'
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." \
+  -d '{"nome": "João Silva", "cpf": "123.456.789-00", "email": "joao@email.com"}'
 ```
 
 ### 4. Criar veículo (autenticado)
@@ -230,14 +174,8 @@ curl -X POST http://localhost:8080/clientes \
 ```bash
 curl -X POST http://localhost:8080/veiculos \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "placa": "ABC-1234",
-    "marca": "Toyota",
-    "modelo": "Corolla",
-    "ano": 2024,
-    "valor": 120000.00
-  }'
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." \
+  -d '{"placa": "ABC-1234", "marca": "Toyota", "modelo": "Corolla", "ano": 2024, "valor": 120000.00}'
 ```
 
 ### 5. Gerar cotação (autenticado)
@@ -245,48 +183,47 @@ curl -X POST http://localhost:8080/veiculos \
 ```bash
 curl -X POST http://localhost:8080/cotacoes \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "idCliente": 1,
-    "idVeiculo": 1
-  }'
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..." \
+  -d '{"idCliente": 1, "idVeiculo": 1}'
 ```
 
 ---
 
-## 📊 Códigos de Resposta
+## 📊 Códigos de resposta
 
-Todas as respostas seguem o formato `ApiResponse<T>`:
+Todas as respostas seguem o formato padronizado:
 
 ```json
 {
   "code": 0,
   "message": "Operação realizada com sucesso",
-  "data": { /* payload */ }
+  "data": { }
 }
 ```
 
 | Código | Significado |
-|:------:|-------------|
-| `0` | ✅ Sucesso |
-| `-1` | ❌ Erro genérico |
-| `1` | ⚠️ Erro de parâmetro |
-| `2` | 📧 Email duplicado |
-| `3` | 🆔 CPF duplicado |
-| `4` | 🔍 Recurso não encontrado |
-| `5` | 🔒 Não autorizado |
-| `6` | ✅ Erro de validação |
+|--------|-------------|
+| `0` | Sucesso |
+| `-1` | Erro genérico |
+| `1` | Erro de parâmetro |
+| `2` | Email duplicado |
+| `3` | CPF duplicado |
+| `4` | Recurso não encontrado |
+| `5` | Não autorizado |
+| `6` | Erro de validação |
 
 ---
 
-## 📚 Documentação Adicional
+## 🛠 Stack
 
-- [`ENDPOINTS.md`](anotation/ENDPOINTS.md) — Descrição detalhada de cada endpoint com exemplos
-- [`TESTES_CURL.md`](anotation/TESTES_CURL.md) — Scripts completos de teste com cURL
-- [Swagger UI](http://localhost:8080/swagger-ui/) — Documentação interativa (em execução)
-
----
-
-<div align="center">
-  <p>Desenvolvido com 💙 usando <a href="https://spring.io/projects/spring-boot">Spring Boot</a></p>
-</div>
+| Categoria | Tecnologia |
+|-----------|-----------|
+| Linguagem | Java 8 |
+| Framework | Spring Boot 2.7.18 |
+| Autenticação | Spring Security + jjwt 0.11.5 |
+| Persistência | Spring Data JPA + Flyway 9.22.3 |
+| Banco | H2 (in-memory) |
+| Documentação | Springfox Swagger 3.0.0 |
+| Mapping | MapStruct 1.5.5 |
+| Build | Maven |
+| Outros | Lombok, Bean Validation
