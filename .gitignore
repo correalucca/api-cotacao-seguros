@@ -37,3 +37,6 @@ out/
 
 ### Docs ###
 anotation/
+
+### Docker ###
+docker/mysql-data/
