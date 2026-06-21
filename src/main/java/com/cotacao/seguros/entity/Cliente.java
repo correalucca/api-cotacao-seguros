@@ -1,5 +1,6 @@
 package com.cotacao.seguros.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
     @Index(name = "idx_email", columnList = "email")
 })
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +29,6 @@ public class Cliente {
     private String email;
     private String telefone;
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("cliente")
     private List<Cotacao> cotacoes;
 }
